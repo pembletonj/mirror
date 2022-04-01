@@ -6,7 +6,7 @@
 class Mirrorer {
 public:
     bool addOutputFile(std::string path);
-    void mirrorInput(std::ifstream &input);
+    void mirrorInput(std::istream &input);
     ~Mirrorer();
 private:
     std::list<std::ofstream*> outputFiles;

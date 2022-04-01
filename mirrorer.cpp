@@ -6,7 +6,7 @@ bool Mirrorer::addOutputFile(std::string path) {
     return output->is_open();
 }
 
-void Mirrorer::mirrorInput(std::ifstream &input) {
+void Mirrorer::mirrorInput(std::istream &input) {
 
     while (!input.eof() && !input.bad()) {
         char c;
