@@ -5,25 +5,49 @@
 
 #include "mirrorer.hpp"
 
+void printHelp(std::string programName) {
+    std::cout << "Usage: " << programName << " [option] <file1> [files...] [options...]" << std::endl;
+    std::cout << "Options:" << std::endl;
+    std::cout << "\t-o [files...]: Output without writing after each character. Default if no option is specified." << std::endl;
+    std::cout << "\t-f [files...]: Output with writing after each character." << std::endl;
+}
+
 int main(int argc, char** argv) {
 
-    std::list<std::string> outputFilePaths;
+    std::list<std::pair<std::string, bool>> outputFilePaths;
 
     if (argc < 2 || strcmp(argv[1], "--help") == 0) {
-        std::cout << "Usage: " << argv[0] << " <file1> [more files...]" << std::endl;
-        std::cout << "Input will be read from stdin and written to each of the output files as it is read." << std::endl;
-        return 1;
+        printHelp(argv[0]);
+        return 0;
     }
 
+    bool flush = false;
+
     for (int i = 1; i < argc; ++i) {
-        outputFilePaths.push_back(argv[i]);
+        if (argv[i][0] == '-') {
+            if (strcmp(argv[i], "-o") == 0) {
+                flush = false;
+            }
+            else if (strcmp(argv[i], "-f") == 0) {
+                flush = true;
+            }
+            else {
+                std::cerr << "Unknown option: " << argv[i] << std::endl;
+                printHelp(argv[0]);
+                return 1;
+            }
+        }
+        else {
+            std::pair<std::string, bool> file(argv[i], flush);
+            outputFilePaths.push_back(file);
+        }
     }
 
     Mirrorer mirrorer;
 
     for (auto it = outputFilePaths.begin(); it != outputFilePaths.end(); ++it) {
-        if (!mirrorer.addOutputFile(*it)) {
-            std::cerr << "Could not open file: " << *it << std::endl;
+        if (!mirrorer.addOutputFile(it->first, it->second)) {
+            std::cerr << "Could not open file: " << it->first << std::endl;
             return 2;
         }
     }

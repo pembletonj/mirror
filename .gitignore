@@ -1,4 +1,5 @@
 mirror
+.vscode
 
 # Prerequisites
 *.d
